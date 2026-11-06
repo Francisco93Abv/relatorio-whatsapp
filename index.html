@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Relatório Rápido - WhatsApp</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for preview card */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(71, 85, 105, 1);
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col justify-between bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-slate-950">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 sm:px-8">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-emerald-950/50">
+                    <i class="fa-solid font-bold fa-clipboard-check text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg sm:text-xl text-white tracking-wide leading-tight">Relatório Rápido</h1>
+                    <p class="text-xs text-slate-400">Padrão WhatsApp para Chamados & Manutenção</p>
+                </div>
+            </div>
+            
+            <button id="btnHelp" class="text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-2 rounded-lg border border-slate-700 transition flex items-center gap-2">
+                <i class="fa-solid fa-mobile-screen-button text-emerald-400"></i>
+                <span class="hidden sm:inline">Criar Atalho no Celular</span>
+                <span class="sm:hidden">Atalho</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        
+        <!-- FORM CONTAINER (Left side on Desktop) -->
+        <section class="lg:col-span-7 bg-slate-900/60 border border-slate-800 rounded-2xl p-5 sm:p-7 shadow-xl flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-800/80">
+                    <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-emerald-400"></i>
+                        Preencher Informações
+                    </h2>
+                    <button type="button" id="btnClear" class="text-xs text-slate-400 hover:text-red-400 transition flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-red-500/10">
+                        <i class="fa-solid fa-trash-can"></i>
+                        Limpar Campos
+                    </button>
+                </div>
+
+                <form id="reportForm" class="space-y-4">
+                    <!-- Local & Chamado Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="local" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                                Local
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </span>
+                                <input type="text" id="local" placeholder="Ex: Setor A / Prédio Central" 
+                                    class="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="chamado" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                                Chamado
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </span>
+                                <input type="text" id="chamado" placeholder="Ex: #12345 ou Manutenção 01" 
+                                    class="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Horários (Início / Término) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="inicio" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                                Início
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                                    <i class="fa-regular fa-clock"></i>
+                                </span>
+                                <input type="text" id="inicio" placeholder="Ex: 08:30 ou DD/MM 08h" 
+                                    class="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="termino" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                                Término
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                                    <i class="fa-solid fa-clock-check"></i>
+                                </span>
+                                <input type="text" id="termino" placeholder="Ex: 10:45 ou Em andamento" 
+                                    class="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fato -->
+                    <div>
+                        <label for="fato" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Fato (Ocorrência)
+                        </label>
+                        <textarea id="fato" rows="2" placeholder="Descreva o problema ou situação identificada..." 
+                            class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"></textarea>
+                    </div>
+
+                    <!-- Causa -->
+                    <div>
+                        <label for="causa" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Causa
+                        </label>
+                        <textarea id="causa" rows="2" placeholder="Descreva o motivo que originou o fato..." 
+                            class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"></textarea>
+                    </div>
+
+                    <!-- Ação -->
+                    <div>
+                        <label for="acao" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Ação Realizada
+                        </label>
+                        <textarea id="acao" rows="2" placeholder="Descreva os procedimentos tomados para solução..." 
+                            class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"></textarea>
+                    </div>
+
+                    <!-- Observação -->
+                    <div>
+                        <label for="observacao" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Observação
+                        </label>
+                        <textarea id="observacao" rows="2" placeholder="Informações adicionais, pendências ou alertas..." 
+                            class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"></textarea>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- PREVIEW CONTAINER (Right side on Desktop) -->
+        <section class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 sm:p-7 shadow-xl h-full flex flex-col">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800/80">
+                    <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i>
+                        Pré-visualização
+                    </h2>
+                    <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                        Tempo Real
+                    </span>
+                </div>
+
+                <!-- Simulador de Mensagem do WhatsApp -->
+                <div class="flex-1 bg-slate-950 border border-slate-800/80 rounded-xl p-4 overflow-y-auto custom-scrollbar font-mono text-xs sm:text-sm text-slate-200 relative min-h-[280px] max-h-[500px]">
+                    <div id="previewBox" class="whitespace-pre-wrap leading-relaxed"></div>
+                </div>
+
+                <!-- Painel de Ações / Botões -->
+                <div class="mt-5 space-y-3">
+                    <button id="btnCopy" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-slate-950 font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-emerald-950/60 flex items-center justify-center gap-2 text-sm sm:text-base">
+                        <i class="fa-solid fa-copy text-lg"></i>
+                        <span>Copiar para o WhatsApp</span>
+                    </button>
+
+                    <button id="btnShare" class="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.99] text-emerald-400 font-semibold py-3 px-4 rounded-xl border border-slate-700 transition flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Enviar Direto no WhatsApp</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-4 text-center text-xs text-slate-500">
+        <p>Gerador de Relatórios WhatsApp &bull; Ferramenta 100% Gratuita & Prática</p>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 translate-y-20 opacity-0 bg-emerald-500 text-slate-950 font-semibold px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 z-50 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toastMessage">Texto copiado com sucesso!</span>
+    </div>
+
+    <!-- Modal Modal de Instruções (PWA/Atalho) -->
+    <div id="helpModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button id="btnCloseModal" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </div>
+                <h3 class="font-bold text-lg text-white">Como usar como Aplicativo</h3>
+            </div>
+
+            <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                Você pode salvar esta ferramenta diretamente na tela inicial do seu celular para abri-la com 1 clique, como se fosse um app instalado!
+            </p>
+
+            <div class="space-y-4 text-xs text-slate-300 border-t border-slate-800 pt-4">
+                <div class="flex gap-3 items-start">
+                    <span class="bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded text-xs mt-0.5">1</span>
+                    <div>
+                        <strong class="text-white">No Android (Chrome):</strong> Toque nos 3 pontinhos (<i class="fa-solid fa-ellipsis-vertical"></i>) no canto superior direito e selecione <em class="text-emerald-400">"Adicionar à tela inicial"</em>.
+                    </div>
+                </div>
+
+                <div class="flex gap-3 items-start">
+                    <span class="bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded text-xs mt-0.5">2</span>
+                    <div>
+                        <strong class="text-white">No iPhone (Safari):</strong> Toque no botão de Compartilhar (<i class="fa-solid fa-share-from-square"></i>) no menu inferior e escolha <em class="text-emerald-400">"Adicionar à Tela de Início"</em>.
+                    </div>
+                </div>
+            </div>
+
+            <button id="btnOkModal" class="w-full mt-6 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-xl transition text-sm">
+                Entendi!
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Field elements
+            const fields = {
+                local: document.getElementById('local'),
+                chamado: document.getElementById('chamado'),
+                inicio: document.getElementById('inicio'),
+                termino: document.getElementById('termino'),
+                fato: document.getElementById('fato'),
+                causa: document.getElementById('causa'),
+                acao: document.getElementById('acao'),
+                observacao: document.getElementById('observacao')
+            };
+
+            const previewBox = document.getElementById('previewBox');
+            const btnCopy = document.getElementById('btnCopy');
+            const btnShare = document.getElementById('btnShare');
+            const btnClear = document.getElementById('btnClear');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            // Help Modal elements
+            const btnHelp = document.getElementById('btnHelp');
+            const helpModal = document.getElementById('helpModal');
+            const btnCloseModal = document.getElementById('btnCloseModal');
+            const btnOkModal = document.getElementById('btnOkModal');
+
+            // Generate WhatsApp formatted text
+            function generateFormattedText() {
+                const getVal = (field) => field.value.trim();
+
+                return `*LOCAL:* ${getVal(fields.local)}
+
+*CHAMADO:* ${getVal(fields.chamado)}
+*INÍCIO:* ${getVal(fields.inicio)}
+*TÉRMINO:* ${getVal(fields.termino)}
+
+*FATO:* ${getVal(fields.fato)}
+*CAUSA:* ${getVal(fields.causa)}
+*AÇÃO:* ${getVal(fields.acao)}
+
+*OBSERVAÇÃO:* ${getVal(fields.observacao)}`;
+            }
+
+            // Render live preview with WhatsApp style formatting
+            function updatePreview() {
+                const rawText = generateFormattedText();
+                
+                // Convert WhatsApp bold syntax (*text*) into HTML bold tag for display preview
+                let formattedHTML = rawText
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\*(.*?)\*/g, '<strong class="text-emerald-400 font-bold">$1</strong>')
+                    .replace(/\n/g, '<br>');
+
+                previewBox.innerHTML = formattedHTML;
+            }
+
+            // Copy text to clipboard using fallback mechanism if navigator fails
+            function copyToClipboard(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    return navigator.clipboard.writeText(text);
+                } else {
+                    // Fallback for older browsers or restricted iframe environments
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.focus();
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                        textarea.remove();
+                        return Promise.resolve();
+                    } catch (err) {
+                        textarea.remove();
+                        return Promise.reject(err);
+                    }
+                }
+            }
+
+            // Show Toast feedback
+            function showToast(msg) {
+                toastMessage.textContent = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 2800);
+            }
+
+            // Event Listener for Input Changes
+            Object.values(fields).forEach(input => {
+                input.addEventListener('input', updatePreview);
+            });
+
+            // Button Copy Action
+            btnCopy.addEventListener('click', () => {
+                const textToCopy = generateFormattedText();
+                copyToClipboard(textToCopy).then(() => {
+                    showToast('Copiado para a área de transferência!');
+                }).catch(() => {
+                    showToast('Erro ao copiar texto.');
+                });
+            });
+
+            // Button Share Direct to WhatsApp
+            btnShare.addEventListener('click', () => {
+                const textToShare = generateFormattedText();
+                const encodedText = encodeURIComponent(textToShare);
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+                window.open(whatsappUrl, '_blank');
+            });
+
+            // Button Clear Fields
+            btnClear.addEventListener('click', () => {
+                Object.values(fields).forEach(input => {
+                    input.value = '';
+                });
+                updatePreview();
+                showToast('Todos os campos foram limpos!');
+            });
+
+            // Modal Controls
+            function openModal() { helpModal.classList.remove('hidden'); }
+            function closeModal() { helpModal.classList.add('hidden'); }
+
+            btnHelp.addEventListener('click', openModal);
+            btnCloseModal.addEventListener('click', closeModal);
+            btnOkModal.addEventListener('click', closeModal);
+            helpModal.addEventListener('click', (e) => {
+                if (e.target === helpModal) closeModal();
+            });
+
+            // Initial Render
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
